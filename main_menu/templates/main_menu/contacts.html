@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="contacts-layout">
+    <div class="info-block">
+        <h2>Связь с нами</h2>
+        <p class="contact-item">Email: anonvpn.support@gmail.com</p>
+        <p class="contact-item">Адрес: Белый дом</p>
+    </div>
+    <div class="form-container">
+        <h2>Напишите нам</h2>
+        <form action="#" method="POST">
+            {% csrf_token %}
+            <p><label>Имя:</label><input type="text" name="name" required></p>
+            <p><label>Email:</label><input type="email" name="email" required></p>
+            <p><label>Сообщение:</label><textarea name="message" required rows="4"></textarea></p>
+            <button type="submit" class="btn-primary">Отправить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

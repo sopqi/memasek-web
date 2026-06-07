@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ own_user.username }} - МемАсЕк{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <h1>
+        @{{ own_user.username }}
+        {% if own_user.is_superuser %}
+            <span class="badge">ADMIN</span>
+        {% endif %}
+    </h1>
+    <p>На сайте с {{ own_user.date_joined|date:"d.m.Y" }}</p>
+</div>
+
+{% if own_user.username == user.username %}
+<div class="tabs-container">
+    <button class="tab-btn active" data-tab="memes">Публикации</button>
+    <button class="tab-btn" data-tab="likes">Лайки</button>
+</div>
+{% else %}
+<h2 class="profile-section-title">Публикации пользователя</h2>
+{% endif %}
+
+<div id="memes-tab" class="tab-content" style="display: block;">
+    {% if mems %}
+    <div class="cards-container">
+        {% for mem in mems %}
+            <a href="{% url 'mem_detail' mem.id %}" class="card">
+                <div class="card-img-wrapper">
+                    <img src="{{ mem.photo.url }}" alt="{{ mem.title }}" />
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">{{ mem.title }}</h3>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="empty-state">
+            <p>У пользователя пока нет публикаций.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% if own_user.username == user.username %}
+<div id="likes-tab" class="tab-content" style="display: none;">
+    {% if liked_mems %}
+    <div class="cards-container">
+        {% for mem in liked_mems %}
+            <a href="{% url 'mem_detail' mem.mem.id %}" class="card">
+                <div class="card-img-wrapper">
+                    <img src="{{ mem.mem.photo.url }}" alt="{{ mem.mem.title }}" />
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">{{ mem.mem.title }}</h3>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Вы еще не лайкали мемы.</p>
+        </div>
+    {% endif %}
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.style.display = 'none');
+
+            this.classList.add('active');
+            document.getElementById(tabId + '-tab').style.display = 'block';
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

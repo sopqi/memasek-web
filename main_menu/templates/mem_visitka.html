@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load mem_extras %}
+
+{% block title %}{{ mem.title }} - МемАсЕк{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="meme-block">
+        <div class="img-box">
+            <img src="{{ mem.photo.url }}" alt="{{ mem.title }}">
+        </div>
+
+        <h1>{{ mem.title }}</h1>
+        <p class="author-text">Автор: <a href="{% url 'profile' mem.author_name %}">@{{ mem.author_name }}</a></p>
+
+        <div class="meme-actions">
+            {% is_liked request.user mem.id as user_liked %}
+            <form action="{% url 'like_mem' mem.id %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="like-btn-big">
+                    {% if user_liked %}❤️{% else %}🤍{% endif %} <span>{{ mem.total_likes }}</span>
+                </button>
+            </form>
+
+            {% if mem.author_name == user.username or user.is_superuser %}
+            <form action="{% url 'delete_mem' mem.id %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger" onclick="return confirm('Точно удалить этот мем навсегда?');">
+                    Удалить мем
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="comments-block">
+        <h3>Комментарии ({{ comments|length }}):</h3>
+        {% for comment in comments %}
+            <div class="comment-item">
+                <p>
+                    <strong><a href="{% url 'profile' comment.author_name %}">{{ comment.author_name }}</a></strong>
+                    {% if comment.author_name == mem.author_name %}<span class="author-badge">Автор</span>{% endif %}
+                    <span class="date">({{ comment.time|date:"d.m.Y H:i" }})</span>
+                </p>
+                <p>{{ comment.comment|linebreaks }}</p>
+            </div>
+        {% empty %}
+            <p>Здесь пока пусто. Напишите что-нибудь!</p>
+        {% endfor %}
+    </div>
+
+    <div class="form-container" style="margin-top: 30px; box-shadow: none; border: 2px solid #eee;">
+        {% if user.is_authenticated %}
+            <h3>Добавить комментарий:</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-primary">Отправить</button>
+            </form>
+        {% else %}
+            <p>Чтобы писать комментарии, нужно <a href="{% url 'login' %}">войти</a>.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

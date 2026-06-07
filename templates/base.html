@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}МемАсЕк{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/shapka.css' %}">
+</head>
+<body>
+
+<header class="header">
+    <div class="navbar">
+        <a href="{% url 'main_menu' %}" class="logo">MEMACEK</a>
+
+        <nav class="nav-menu">
+            <a href="{% url 'main_menu' %}" class="nav-link">Лента мемов</a>
+            <a href="{% url 'add_photo' %}" class="nav-link">Создать мем</a>
+            <a href="{% url 'contacts' %}" class="nav-link">Контакты</a>
+        </nav>
+
+        <div class="nav-auth">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' user.username %}" class="user-link">@{{ user.username }}</a>
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-outline">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link">Вход</a>
+                <a href="{% url 'signup' %}" class="btn-primary">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+<main class="main-content">
+    {% block content %}
+    {% endblock %}
+</main>
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; 2026 ANONVPN CORP. Лучшие мемы здесь.</p>
+    </div>
+</footer>
+
+</body>
+</html>

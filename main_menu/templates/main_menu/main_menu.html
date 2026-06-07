@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - МемАсЕк{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Лента мемов <span class="badge">Всего: {{ mems|length }}</span></h1>
+</div>
+
+<div class="cards-container">
+  {% for mem in mems %}
+    <a href="{% url 'mem_detail' mem.id %}" class="card">
+      <div class="card-img-wrapper">
+          <img src="{{ mem.photo.url }}" alt="{{ mem.title }}" />
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">{{ mem.title }}</h3>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}
