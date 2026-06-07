@@ -1,7 +1,7 @@
-from django.urls import path
+from django.urls import path, re_path  # Добавили re_path
 from . import views
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve  # Добавили импорт serve
 
 urlpatterns = [
     path('', views.main_menu, name='main_menu'),
@@ -11,7 +11,7 @@ urlpatterns = [
     path('add_photo/', views.add_photo, name='add_photo'),
     path('like/<int:mem_id>/', views.like_mem, name='like_mem'),
     path('delete/<int:mem_id>/', views.delete_mem, name='delete_mem'),
-]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Принудительная раздача медиа-файлов (картинок) при выключенном DEBUG:
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
