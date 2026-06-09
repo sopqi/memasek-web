@@ -1,18 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from PIL import Image  # ДОБАВИТЬ ЭТОТ ИМПОРТ
 
 
 class Mem(models.Model):
-    photo = models.ImageField(upload_to = 'photo_mem')
-    title = models.CharField(max_length = 20)
+    photo = models.ImageField(upload_to='photo_mem')
+    title = models.CharField(max_length=20)
     author_name = models.CharField(max_length=20)
 
     def __str__(self):
-        return  self.title
+        return self.title
 
     @property
     def total_likes(self):
         return self.likes.count()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.photo:
+            filepath = self.photo.path
+            img = Image.open(filepath)
+
+            if img.height > 800 or img.width > 800:
+                output_size = (800, 800)
+                img.thumbnail(output_size)
+
+            img.save(filepath, format='JPEG', quality=75, optimize=True)
+
 
 class Comment(models.Model):
     mem = models.ForeignKey(Mem, on_delete=models.CASCADE)
