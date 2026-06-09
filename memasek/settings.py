@@ -61,6 +61,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'init_command': 'PRAGMA journal_mode=WAL;',  # ВКЛЮЧАЕТ ТУРБО-РЕЖИМ БД
+        }
     }
 }
 
@@ -123,3 +126,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'main_menu.User'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+WHITENOISE_MAX_AGE = 31536000
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = False
