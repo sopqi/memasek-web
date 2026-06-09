@@ -1,5 +1,4 @@
 Django>=4.2,<6.0
 Pillow
-PIL
 gunicorn
 whitenoise
