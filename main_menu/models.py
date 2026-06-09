@@ -19,14 +19,20 @@ class Mem(models.Model):
         super().save(*args, **kwargs)
 
         if self.photo:
-            filepath = self.photo.path
-            img = Image.open(filepath)
+            try:
+                filepath = self.photo.path
+                img = Image.open(filepath)
 
-            if img.height > 800 or img.width > 800:
-                output_size = (800, 800)
-                img.thumbnail(output_size)
+                if img.mode in ("RGBA", "P"):
+                    img = img.convert("RGB")
 
-            img.save(filepath, format='JPEG', quality=75, optimize=True)
+                if img.height > 800 or img.width > 800:
+                    output_size = (800, 800)
+                    img.thumbnail(output_size)
+
+                img.save(filepath, format='JPEG', quality=75, optimize=True)
+            except Exception as e:
+                pass
 
 
 class Comment(models.Model):

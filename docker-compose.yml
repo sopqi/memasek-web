@@ -10,6 +10,6 @@ services:
       - ./db.sqlite3:/app/db.sqlite3
       - ./media:/app/media
     environment:
-      - DEBUG=False
+      - DEBUG=True
       - SECRET_KEY=super_secret_key_memasek_2026
       - ALLOWED_HOSTS=*
